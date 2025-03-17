@@ -25,14 +25,15 @@ jobs:
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        
+      - name: Update version in nuspec file
+        run: sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/" .nuspec
 
-      - name: Install NuGet
-        uses: nuget/setup-nuget@v2
-        with:
-          nuget-version: 'latest'
+      - name: Restore NuGet packages
+        run: dotnet restore
 
       - name: Create NuGet package
-        run: nuget pack .nuspec -Version ${{ steps.get_version.outputs.VERSION }}
+        run: dotnet pack --no-build --configuration Release /p:NuspecFile=.nuspec /p:NuspecProperties="version=${{ steps.get_version.outputs.VERSION }}"
 
       - name: Publish to GitHub Packages
         run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/schnow265/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
