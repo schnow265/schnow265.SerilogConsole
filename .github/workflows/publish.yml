@@ -36,7 +36,7 @@ jobs:
         run: dotnet pack --no-build --configuration Release /p:NuspecFile=.nuspec /p:NuspecProperties="version=${{ steps.get_version.outputs.VERSION }}"
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/schnow265/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push bin/Release/*.nupkg --source https://nuget.pkg.github.com/schnow265/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
