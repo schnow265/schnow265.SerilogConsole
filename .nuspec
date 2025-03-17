@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>schnow265.SerilogConsole</id>
+    <version>1.0.0</version>
+    <authors>schnow265</authors>
+    <description>A .NET template for console applications with Serilog integration</description>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+    <tags>dotnet-new template serilog console</tags>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/schnow265/SerilogConsole</projectUrl>
+    <repository type="git" url="https://github.com/schnow265/SerilogConsole.git" />
+  </metadata>
+  <files>
+    <file src="**" exclude="bin\**;obj\**;.vs\**;.git\**;.github\workflows\**" target="content" />
+  </files>
+</package>
