@@ -11,7 +11,8 @@ jobs:
     strategy:
       matrix:
         template: [
-          { project: 'SerilogConsole', nuspec: 'SerilogConsole/.nuspec' }
+          { project: 'SerilogConsole', nuspec: 'SerilogConsole/.nuspec' },
+          { project: 'DependencyInjectionTemplate', nuspec: 'DependencyInjectionTemplate/.nuspec' },
           # Add more templates here as needed
           # For example: { project: 'AnotherTemplate', nuspec: 'AnotherTemplate/.nuspec' }
         ]

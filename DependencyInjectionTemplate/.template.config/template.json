@@ -1,0 +1,38 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "schnow265",
+  "classifications": ["Console", "DependencyInjection"],
+  "identity": "schnow265.Templates.DependencyInjectionTemplate",
+  "name": "Dependency Injection Template",
+  "shortName": "DependencyInjection",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "DependencyInjectionTemplate",
+  "preferNameDirectory": true,
+  "description": "A .NET template for console applications with Dependency Injection already set up.",
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net9.0",
+          "description": ".NET 9.0"
+        },
+        {
+          "choice": "net8.0",
+          "description": ".NET 8.0"
+        }
+      ],
+      "defaultValue": "net9.0",
+      "description": "The target framework for the project."
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "DependencyInjectionTemplate.csproj"
+    }
+  ]
+}
