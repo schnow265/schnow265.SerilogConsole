@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>schnow265.Templates.DependencyInjectionTemplate</id>
+    <version>1.0.0</version>
+    <authors>schnow265</authors>
+    <description>A .NET template for console applications with Dependency Injection</description>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+    <tags>dotnet-new template di dependency-injection</tags>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/schnow265/schnow265.Templates</projectUrl>
+    <repository type="git" url="https://github.com/schnow265/schnow265.Templates.git" />
+  </metadata>
+  <files>
+    <file src="**" exclude="bin\**;obj\**" target="content" />
+  </files>
+</package>

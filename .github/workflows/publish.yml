@@ -13,6 +13,7 @@ jobs:
         template: [
           { project: 'SerilogConsole', nuspec: 'SerilogConsole/.nuspec' },
           { project: 'DependencyInjectionTemplate', nuspec: 'DependencyInjectionTemplate/.nuspec' },
+          { project: 'SemanticKernelOllama', nuspec: 'SemanticKernelOllama/.nuspec' },
           # Add more templates here as needed
           # For example: { project: 'AnotherTemplate', nuspec: 'AnotherTemplate/.nuspec' }
         ]
