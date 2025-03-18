@@ -10,12 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        template: [
-          { project: 'SerilogConsole', nuspec: 'SerilogConsole/.nuspec' },
-          { project: 'DependencyInjectionTemplate', nuspec: 'DependencyInjectionTemplate/.nuspec' },
-          # Add more templates here as needed
-          # For example: { project: 'AnotherTemplate', nuspec: 'AnotherTemplate/.nuspec' }
-        ]
+        projects:
+          - 'SerilogConsole'
+          - 'DependencyInjectionTemplate'
+
     outputs:
       version: ${{ steps.get_version.outputs.VERSION }}
       
@@ -33,19 +31,19 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         
       - name: Update version in nuspec file
-        run: sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/" ${{ matrix.template.nuspec }}
+        run: sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/" ${{ matrix.projects }}/.nuspec
 
       - name: Restore NuGet packages
-        run: dotnet restore ${{ matrix.template.project }}
+        run: dotnet restore ${{ matrix.projects }}
 
       - name: Create NuGet package
-        run: dotnet pack ${{ matrix.template.project }} --no-build --configuration Release /p:NuspecFile=${{ matrix.template.nuspec }} /p:NuspecProperties="version=${{ steps.get_version.outputs.VERSION }}"
+        run: dotnet pack ${{ matrix.projects }} --no-build --configuration Release /p:NuspecFile=.nuspec /p:NuspecProperties="version=${{ steps.get_version.outputs.VERSION }}"
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nuget-package-${{ matrix.template.project }}
-          path: ${{ matrix.template.project }}/bin/Release/*.nupkg
+          name: nuget-package-${{ matrix.projects }}
+          path: ${{ matrix.projects }}/bin/Release/*.nupkg
           retention-days: 1
 
   publish:
