@@ -2,7 +2,7 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "schnow265",
   "classifications": ["Console", "Serilog", "Logging"],
-  "identity": "schnow265.SerilogConsole",
+  "identity": "schnow265.Templates.SerilogConsole",
   "name": "Serilog Console Template",
   "shortName": "ConsoleLogger",
   "tags": {

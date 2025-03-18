@@ -6,13 +6,18 @@ on:
       - 'v*'  # Triggers the workflow on new tag creation
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write  # Need write permission to create a release
-      packages: write
-
+    strategy:
+      matrix:
+        template: [
+          { project: 'SerilogConsole', nuspec: 'SerilogConsole/.nuspec' }
+          # Add more templates here as needed
+          # For example: { project: 'AnotherTemplate', nuspec: 'AnotherTemplate/.nuspec' }
+        ]
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,16 +32,50 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         
       - name: Update version in nuspec file
-        run: sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/" .nuspec
+        run: sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/" ${{ matrix.template.nuspec }}
 
       - name: Restore NuGet packages
-        run: dotnet restore
+        run: dotnet restore ${{ matrix.template.project }}
 
       - name: Create NuGet package
-        run: dotnet pack --no-build --configuration Release /p:NuspecFile=.nuspec /p:NuspecProperties="version=${{ steps.get_version.outputs.VERSION }}"
+        run: dotnet pack ${{ matrix.template.project }} --no-build --configuration Release /p:NuspecFile=${{ matrix.template.nuspec }} /p:NuspecProperties="version=${{ steps.get_version.outputs.VERSION }}"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package-${{ matrix.template.project }}
+          path: ${{ matrix.template.project }}/bin/Release/*.nupkg
+          retention-days: 1
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Need write permission to create a release
+      packages: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./packages
+      
+      - name: Move all packages to single directory
+        run: |
+          mkdir -p ./nupkgs
+          find ./packages -name "*.nupkg" -exec cp {} ./nupkgs/ \;
+          ls -la ./nupkgs/
+
+      - name: Setup .NET for publishing
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
 
       - name: Publish to GitHub Packages
-        run: dotnet nuget push bin/Release/*.nupkg --source https://nuget.pkg.github.com/schnow265/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for package in ./nupkgs/*.nupkg; do
+            dotnet nuget push "$package" --source https://nuget.pkg.github.com/schnow265/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -46,9 +85,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          name: Release v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ needs.build.outputs.version }}
           generate_release_notes: true
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./*.nupkg
+          files: ./nupkgs/*.nupkg
