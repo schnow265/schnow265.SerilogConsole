@@ -1,12 +1,14 @@
 using DependencyInjectionTemplate.Services.Interfaces;
 
+using Microsoft.Extensions.Logging;
+
 namespace DependencyInjectionTemplate.Services
 {
-    public class Application : IApplication
+    public class Application(ILogger<Application> logger) : IApplication
     {
         public void Run(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            logger.LogDebug("Hello, World!");
         }
     }
 }
